@@ -1,0 +1,41 @@
+[project]
+name = "ad-budget-agent"
+version = "0.1.0"
+description = "Claude agent that proposes daily ad budget moves for synthetic DTC brands: ClickHouse for event analytics, Postgres for agent state, guardrails in code, approval modes, decision memory and evals against baselines."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.13"
+dependencies = [
+    "anthropic>=2.0",
+    "clickhouse-connect>=0.8",
+    "fastapi>=0.115",
+    "psycopg[binary]>=3.2",
+    "pydantic>=2.8",
+    "uvicorn>=0.30",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.27",
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q -m 'not db'"
+markers = [
+    "db: integration tests that need the Docker Compose ClickHouse and Postgres (run with -m db)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+extend-exclude = ["web"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]

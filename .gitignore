@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.env
+web/node_modules/
+web/dist/
+# generated eval reports (the example-* report and the results-* reports are committed on purpose)
+evals/reports/*
+!evals/reports/example-*
+!evals/reports/results-*

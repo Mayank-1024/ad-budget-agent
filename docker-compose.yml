@@ -1,0 +1,42 @@
+name: ad-budget-agent
+# ClickHouse (event analytics, OLAP) and Postgres (agent state, OLTP) for local runs.
+# Non-default host ports so they do not clash with a local Postgres or ClickHouse.
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8
+    environment:
+      CLICKHOUSE_USER: agent
+      CLICKHOUSE_PASSWORD: agent
+      CLICKHOUSE_DB: ads
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ports:
+      - "18123:8123"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8123/ping"]
+      interval: 2s
+      retries: 30
+    volumes:
+      - chdata:/var/lib/clickhouse
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: agent
+      POSTGRES_PASSWORD: agent
+      POSTGRES_DB: agent_state
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "agent", "-d", "agent_state"]
+      interval: 2s
+      retries: 30
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  chdata:
+  pgdata:
