@@ -42,7 +42,7 @@ def get_settings() -> Settings:
         model_max_tokens=int(env("MODEL_MAX_TOKENS", "16000")),
         model_timeout_s=float(env("MODEL_TIMEOUT_S", "60")),
         model_max_attempts=int(env("MODEL_MAX_ATTEMPTS", "3")),
-        max_tool_steps=int(env("MAX_TOOL_STEPS", "6")),
+        max_tool_steps=int(env("MAX_TOOL_STEPS", "10")),
         # claude-haiku-5-5 list prices (prompts under 100K tokens), 2026-10
         price_input_per_mtok=float(env("PRICE_INPUT_PER_MTOK", "0.10")),
         price_output_per_mtok=float(env("PRICE_OUTPUT_PER_MTOK", "0.50")),

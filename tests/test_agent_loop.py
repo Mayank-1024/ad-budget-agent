@@ -46,9 +46,25 @@ def test_invalid_twice_falls_back_to_hold(lumen_ctx):
     assert len(r.validation_errors) == 2
 
 
-def test_step_limit(lumen_ctx):
-    r, _ = run(lumen_ctx, [METRICS] * 7)
-    assert r.fallback_reason == "step_limit" and r.tool_calls == 6
+def test_step_limit_asks_for_an_answer_first(lumen_ctx):
+    """Over budget once: calls are not run, the model is told, and can still answer."""
+    four = {"tool_calls": [{"name": "get_daily_trend",
+                            "input": {"campaign_id": c.campaign_id, "days": 7}}
+                           for c in lumen_ctx.campaigns]}
+    model = ScriptedModel([METRICS, METRICS, METRICS, four,
+                           final(move("lumen_meta_retargeting", 560))])
+    r = run_agent_day(model, lumen_ctx, None, LoopConfig(max_tool_steps=6),
+                      sleep=lambda s: None)
+    assert r.fallback_reason is None and r.tool_calls == 3  # the batch of 4 was not run
+    assert r.budget_exhausted
+    told = model.seen_messages[4][-1]["content"]
+    assert all(b["is_error"] and "budget is used up" in b["content"] for b in told)
+    assert r.requested["lumen_meta_retargeting"] == 560
+
+
+def test_step_limit_then_more_tools_falls_back(lumen_ctx):
+    r, _ = run(lumen_ctx, [METRICS] * 12)
+    assert r.fallback_reason == "step_limit" and r.tool_calls == 10
 
 
 def test_transient_errors_are_retried(lumen_ctx):

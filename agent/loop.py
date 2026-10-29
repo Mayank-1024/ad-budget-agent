@@ -6,6 +6,10 @@
                                                                                     |
                                         valid? requested budgets : fallback (hold all)
 
+Tool budget: at most `max_tool_steps` tool calls. A batch that would go over is not run;
+the model gets an is_error tool_result for each call saying the budget is used up and is
+asked to answer with what it has. Asking for more tools after that ends the run.
+
 The guardrails (agent/guardrails.py) run after this, on whatever budgets come out, in
 engine/cycle.py. Every failure path (invalid output twice, step limit, model unavailable
 after retries, non-retryable model error) ends in the same deterministic fallback: hold
@@ -33,10 +37,15 @@ from agent.retry import call_with_retries
 from agent.tools import DayContext
 from storage.models import MemoryItem
 
+BUDGET_EXHAUSTED = ("Error: today's tool-call budget is used up, so this call was not run. "
+                    "Return your proposal now, using the data you already have.")
+
 
 @dataclass
 class LoopConfig:
-    max_tool_steps: int = 6
+    # Raised from 6 after the first real run (2026-10-29): Claude fetched daily trends for
+    # several campaigns in one parallel batch and overshot 6 calls (see README, Evals).
+    max_tool_steps: int = 10
     max_model_attempts: int = 3  # per model call, including the first
 
 
@@ -52,6 +61,7 @@ class AgentRun:
     input_tokens: int | None = None
     output_tokens: int | None = None
     latency_ms: int = 0
+    budget_exhausted: bool = False  # the model was told its tool budget is used up
     tools_called: list[str] = field(default_factory=list)
     validation_errors: list[str] = field(default_factory=list)
 
@@ -93,7 +103,15 @@ def run_agent_day(model: ModelClient, ctx: DayContext, memory: list[MemoryItem] 
 
         if turn.tool_calls:
             if run.tool_calls + len(turn.tool_calls) > config.max_tool_steps:
-                return finish(None, "step_limit")
+                # First time over budget: run none of these calls, tell the model, and let
+                # it answer with the data it already has. Second time: fall back.
+                if run.budget_exhausted:
+                    return finish(None, "step_limit")
+                run.budget_exhausted = True
+                messages.append({"role": "user", "content": [
+                    {"type": "tool_result", "tool_use_id": call.id, "is_error": True,
+                     "content": BUDGET_EXHAUSTED} for call in turn.tool_calls]})
+                continue
             results = []
             for call in turn.tool_calls:
                 run.tool_calls += 1
