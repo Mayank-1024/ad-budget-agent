@@ -1,9 +1,9 @@
 {
   "meta": {
-    "tag": "results-20261029-real-seed11-baselines",
+    "tag": "real-s7-baselines",
     "model": "scripted (RulePlayingModel, not an LLM)",
     "store": "db",
-    "seed": 11,
+    "seed": 7,
     "mode": "approve",
     "brands": [
       "lumen",
@@ -12,12 +12,12 @@
     ],
     "warmup_days": 7,
     "eval_days": 21,
-    "generated_at": "2026-10-29T10:22:20+00:00",
+    "generated_at": "2026-10-29T10:25:09+00:00",
     "total_model_spend_usd": 0.0
   },
   "scores": [
     {
-      "experiment_id": "results-20261029-real-seed11-baselines-hold",
+      "experiment_id": "real-s7-baselines-hold",
       "policy": "hold",
       "model": "none",
       "mode": "approve",
@@ -28,28 +28,28 @@
         "ridgeline",
         "kindred"
       ],
-      "spend": 143966.03,
-      "expected_true_revenue": 411903.78,
-      "realized_true_revenue": 405751.51,
-      "reported_revenue": 361681.43,
-      "true_roas": 2.861,
-      "reported_roas": 2.512,
-      "net_after_ad_spend": 267937.75,
+      "spend": 144249.31,
+      "expected_true_revenue": 412780.72,
+      "realized_true_revenue": 412939.96,
+      "reported_revenue": 365656.95,
+      "true_roas": 2.862,
+      "reported_roas": 2.535,
+      "net_after_ad_spend": 268531.41,
       "by_brand": {
         "lumen": {
-          "spend": 51505.3,
-          "expected_true_revenue": 175123.89,
-          "true_roas": 3.4
+          "spend": 51492.91,
+          "expected_true_revenue": 175214.36,
+          "true_roas": 3.403
         },
         "ridgeline": {
-          "spend": 51359.44,
-          "expected_true_revenue": 117503.94,
-          "true_roas": 2.288
+          "spend": 51494.23,
+          "expected_true_revenue": 117845.53,
+          "true_roas": 2.289
         },
         "kindred": {
-          "spend": 41101.29,
-          "expected_true_revenue": 119275.95,
-          "true_roas": 2.902
+          "spend": 41262.17,
+          "expected_true_revenue": 119720.83,
+          "true_roas": 2.901
         }
       },
       "proposals": 0,
@@ -73,7 +73,7 @@
       "latency_s_p95": null
     },
     {
-      "experiment_id": "results-20261029-real-seed11-baselines-roas_rule",
+      "experiment_id": "real-s7-baselines-roas_rule",
       "policy": "roas_rule",
       "model": "none",
       "mode": "approve",
@@ -84,42 +84,42 @@
         "ridgeline",
         "kindred"
       ],
-      "spend": 171884.61,
-      "expected_true_revenue": 427690.76,
-      "realized_true_revenue": 426230.85,
-      "reported_revenue": 400324.14,
-      "true_roas": 2.488,
-      "reported_roas": 2.329,
-      "net_after_ad_spend": 255806.15,
+      "spend": 172745.02,
+      "expected_true_revenue": 423252.01,
+      "realized_true_revenue": 422419.27,
+      "reported_revenue": 397245.09,
+      "true_roas": 2.45,
+      "reported_roas": 2.3,
+      "net_after_ad_spend": 250506.99,
       "by_brand": {
         "lumen": {
-          "spend": 65936.6,
-          "expected_true_revenue": 148522.87,
-          "true_roas": 2.253
+          "spend": 66105.94,
+          "expected_true_revenue": 143116.34,
+          "true_roas": 2.165
         },
         "ridgeline": {
-          "spend": 58926.41,
-          "expected_true_revenue": 141485.91,
-          "true_roas": 2.401
+          "spend": 59164.98,
+          "expected_true_revenue": 141844.2,
+          "true_roas": 2.397
         },
         "kindred": {
-          "spend": 47021.6,
-          "expected_true_revenue": 137681.98,
-          "true_roas": 2.928
+          "spend": 47474.1,
+          "expected_true_revenue": 138291.47,
+          "true_roas": 2.913
         }
       },
-      "proposals": 128,
+      "proposals": 134,
       "proposals_by_status": {
-        "auto_approved": 81,
-        "blocked": 47
+        "auto_approved": 70,
+        "blocked": 64
       },
       "rejections": 0,
       "rejections_by_rule": {},
       "repeated_rejections": 0,
       "guardrail_interventions": {
-        "brand_cap": 60,
+        "brand_cap": 65,
         "tracking_freeze": 13,
-        "min_learning": 3
+        "min_learning": 11
       },
       "runs": 63,
       "fallback_runs": 0,

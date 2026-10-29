@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "tag": "real-s11-approve-agent",
+    "model": "claude-haiku-5-5",
+    "store": "db",
+    "seed": 11,
+    "mode": "approve",
+    "brands": [
+      "lumen",
+      "ridgeline",
+      "kindred"
+    ],
+    "warmup_days": 7,
+    "eval_days": 21,
+    "generated_at": "2026-10-29T10:31:46+00:00",
+    "total_model_spend_usd": 0.0689
+  },
+  "scores": [
+    {
+      "experiment_id": "real-s11-approve-agent-agent",
+      "policy": "agent",
+      "model": "claude-haiku-5-5",
+      "mode": "approve",
+      "memory": true,
+      "eval_days": 21,
+      "brands": [
+        "lumen",
+        "ridgeline",
+        "kindred"
+      ],
+      "spend": 150415.35,
+      "expected_true_revenue": 444194.33,
+      "realized_true_revenue": 441746.98,
+      "reported_revenue": 400907.95,
+      "true_roas": 2.953,
+      "reported_roas": 2.665,
+      "net_after_ad_spend": 293778.98,
+      "by_brand": {
+        "lumen": {
+          "spend": 49842.5,
+          "expected_true_revenue": 175139.02,
+          "true_roas": 3.514
+        },
+        "ridgeline": {
+          "spend": 54679.78,
+          "expected_true_revenue": 133554.92,
+          "true_roas": 2.442
+        },
+        "kindred": {
+          "spend": 45893.07,
+          "expected_true_revenue": 135500.39,
+          "true_roas": 2.953
+        }
+      },
+      "proposals": 35,
+      "proposals_by_status": {
+        "rejected": 3,
+        "approved": 32
+      },
+      "rejections": 3,
+      "rejections_by_rule": {
+        "demand_capped": 1,
+        "strategic_prospecting": 1,
+        "below_target": 1
+      },
+      "repeated_rejections": 0,
+      "guardrail_interventions": {},
+      "runs": 63,
+      "fallback_runs": 35,
+      "fallback_reasons": {
+        "model_error": 35
+      },
+      "output_retries": 1,
+      "api_retries": 0,
+      "model_calls": 83,
+      "tool_calls": 138,
+      "input_tokens": 340996,
+      "output_tokens": 69690,
+      "cost_usd": 0.0689,
+      "latency_s_mean": 14.17,
+      "latency_s_p50": 14.401,
+      "latency_s_p95": 18.791
+    }
+  ]
+}

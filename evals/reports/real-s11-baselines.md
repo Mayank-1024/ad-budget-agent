@@ -1,8 +1,8 @@
-# Eval report: results-20261029-real-seed11-baselines
+# Eval report: real-s11-baselines
 
 - model: `scripted (RulePlayingModel, not an LLM)`, store: `db`, seed: 11, mode: `approve`
 - brands: lumen, ridgeline, kindred; warm-up 7 days, eval 21 days
-- generated: 2026-10-29T10:22:20+00:00
+- generated: 2026-10-29T10:25:14+00:00
 
 | policy | spend | expected true revenue | true ROAS | reported ROAS | net after ad spend | proposals | rejected | repeated rejections | guardrail interventions | fallbacks | cost (USD) | latency p50 / p95 (s) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|

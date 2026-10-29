@@ -93,7 +93,9 @@ def run_brand_day(*, experiment_id: str, sim_day: date, brand_id: str, policy: P
                         for p in record.proposals]
     state.log(experiment_id, sim_day, "brand_day_done",
               {"brand_id": brand_id, "policy": policy.name, "status": run.status,
-               "proposals": len(record.proposals), "interventions": record.interventions})
+               "proposals": len(record.proposals), "interventions": record.interventions,
+               "flags": sorted(out.flagged),
+               "summary": ar.proposal.summary if ar and ar.proposal else None})
     return record
 
 

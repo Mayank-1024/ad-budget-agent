@@ -115,4 +115,5 @@ def test_audit_log_written(seeded, scenario):
     cycle(seeded, scenario, scripted(mv("lumen_meta_retargeting", 550)), "approve")
     events = [a["event"] for a in state.audit]
     assert "proposal_approved" in events and events[-1] == "brand_day_done"
+    assert state.audit[-1]["payload"]["summary"] == "today"
     json.dumps(state.audit, default=str)

@@ -48,7 +48,7 @@ data:
 | `approvals/reviewer.py` | Simulated reviewer with knowledge the agent lacks | Its rules are right on the hidden ground truth |
 | `engine/cycle.py` | One brand-day: propose, guard, store, approve, execute | Decreases execute before increases |
 | `engine/simulation.py` | Warm-up, then daily loop; truth kept out of the databases | Ground truth never reaches anything the agent can read |
-| `evals/metrics.py`, `evals/run.py` | Scoring and the CLI with a hard spend guard | Expected true revenue as the headline metric, and why |
+| `evals/metrics.py`, `evals/run.py`, `evals/rescore.py` | Scoring, the CLI with a hard spend guard, and re-scoring a window from Postgres | Expected true revenue as the headline metric, and why |
 | `api/main.py`, `web/` | Approval queue API and React dashboard | Human decisions go through the same `decide` as the simulated reviewer |
 | `tests/` | Unit tests (offline) and `-m db` integration tests | What each layer's tests prove |
 
@@ -175,8 +175,10 @@ brand. Its output is validated, then clipped by code, then (by default) approved
 person before anything executes. Failures fall back to holding budgets.
 
 **4. How do you know the agent is good?**
-Evals against two baselines on hidden ground truth, over 21 simulated days and two seeds
-(see README for the numbers). The honest caveat: I designed the simulator, so the agent
+Evals against two baselines on hidden ground truth. On 2026-10-29, over the 8 clean eval
+days and two seeds, every agent variant beat holding budgets by 5.0% to 7.9% on net after
+ad spend and beat the ROAS rule, which lost money relative to holding because it cut the
+under-reported prospecting campaign and scaled saturated brand search. The honest caveat: I designed the simulator, so the agent
 is being tested on traps I chose. It shows the loop works and the measurement is set up
 correctly, not that the agent would beat a media buyer on real accounts.
 
@@ -184,8 +186,11 @@ correctly, not that the agent would beat a media buyer on real accounts.
 In approve mode, a rejected move never executes, so memory does not change revenue much;
 what it changes is reviewer workload: how many times a person has to say "no" to the same
 thing. The eval counts repeated rejections (same campaign, direction and rule as an
-earlier rejection) with and without memory. In automate mode, where small moves skip the
-reviewer, memory matters for outcomes too.
+earlier rejection) with and without memory: 15 and 13 without, 0 and 0 with, on the two
+seeds. Memory did not improve revenue: the no-memory agent made slightly more net (2.7%
+and 1.2%), and the memory agent proposed fewer moves overall. Two seeds over 8 days cannot
+tell whether that is a real effect. In automate mode, where small moves skip the reviewer,
+memory could matter for outcomes too; that is the next experiment.
 
 **6. What happens when the model returns garbage or the API is down?**
 Invalid JSON or a semantic error gets one retry with the exact error message. A second
@@ -211,8 +216,11 @@ The first real run hit the tool-step limit: Claude asked for the daily trend of 
 campaigns in one parallel batch and overshot 6 calls, so those runs fell back to holding.
 That was my limit being too tight and too abrupt, not the model misbehaving. I raised it
 to 10 and made it graceful (the batch is not run, the model is told the budget is used up
-and answers with what it has), and added tests for both paths. The README has the
-details and the other findings from the full runs.
+and answers with what it has), and added tests for both paths. Second, the API account ran out of
+credit mid-run: every later call returned HTTP 400 and every run fell back to holding
+budgets, exactly as designed. I scored the 8 days before that by rebuilding them from
+Postgres and re-running the deterministic market, and checked the re-scorer reproduces a
+complete run's report exactly before trusting it.
 
 **10. How much of this did you write vs Claude Code?**
 Answer this honestly in your own words. The README credit says it was built with Claude

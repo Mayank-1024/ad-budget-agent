@@ -1,0 +1,85 @@
+{
+  "meta": {
+    "tag": "real-s11-approve-agent_no_memory",
+    "model": "claude-haiku-5-5",
+    "store": "db",
+    "seed": 11,
+    "mode": "approve",
+    "brands": [
+      "lumen",
+      "ridgeline",
+      "kindred"
+    ],
+    "warmup_days": 7,
+    "eval_days": 21,
+    "generated_at": "2026-10-29T10:31:44+00:00",
+    "total_model_spend_usd": 0.0676
+  },
+  "scores": [
+    {
+      "experiment_id": "real-s11-approve-agent_no_memory-agent_no_memory",
+      "policy": "agent_no_memory",
+      "model": "claude-haiku-5-5",
+      "mode": "approve",
+      "memory": false,
+      "eval_days": 21,
+      "brands": [
+        "lumen",
+        "ridgeline",
+        "kindred"
+      ],
+      "spend": 157247.4,
+      "expected_true_revenue": 452138.66,
+      "realized_true_revenue": 450940.7,
+      "reported_revenue": 407606.47,
+      "true_roas": 2.875,
+      "reported_roas": 2.592,
+      "net_after_ad_spend": 294891.26,
+      "by_brand": {
+        "lumen": {
+          "spend": 54572.07,
+          "expected_true_revenue": 179515.67,
+          "true_roas": 3.29
+        },
+        "ridgeline": {
+          "spend": 57559.77,
+          "expected_true_revenue": 139547.85,
+          "true_roas": 2.424
+        },
+        "kindred": {
+          "spend": 45115.56,
+          "expected_true_revenue": 133075.14,
+          "true_roas": 2.95
+        }
+      },
+      "proposals": 66,
+      "proposals_by_status": {
+        "rejected": 22,
+        "approved": 44
+      },
+      "rejections": 22,
+      "rejections_by_rule": {
+        "demand_capped": 9,
+        "strategic_prospecting": 10,
+        "below_target": 3
+      },
+      "repeated_rejections": 17,
+      "guardrail_interventions": {},
+      "runs": 63,
+      "fallback_runs": 35,
+      "fallback_reasons": {
+        "model_error": 35
+      },
+      "output_retries": 1,
+      "api_retries": 0,
+      "model_calls": 86,
+      "tool_calls": 146,
+      "input_tokens": 338460,
+      "output_tokens": 67556,
+      "cost_usd": 0.0676,
+      "latency_s_mean": 14.06,
+      "latency_s_p50": 14.434,
+      "latency_s_p95": 16.456
+    }
+  ]
+}

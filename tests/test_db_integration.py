@@ -114,3 +114,20 @@ def test_db_and_memory_experiments_score_identically(ch, pg):
         results.append(s)
     assert results[0] == results[1]
     assert results[0]["repeated_rejections"] > 0
+
+
+def test_rescore_reproduces_a_stored_experiment(ch, pg):
+    from evals.rescore import rebuild
+
+    scenario = default_scenario(eval_days=4)
+    r = run_experiment(experiment_id="it-rescore", scenario=scenario,
+                       policy=AgentPolicy(RulePlayingModel(True), name="agent"),
+                       state=pg, events=ch, use_memory=True)
+    original = score(r, 0.1, 0.5)
+    rebuilt = score(rebuild(pg, "it-rescore", seed=7, eval_days=4), 0.1, 0.5)
+    for key in ("spend", "expected_true_revenue", "realized_true_revenue", "reported_revenue",
+                "proposals", "proposals_by_status", "rejections", "repeated_rejections",
+                "guardrail_interventions"):
+        assert rebuilt[key] == original[key], key
+    shorter = score(rebuild(pg, "it-rescore", seed=7, eval_days=2), 0.1, 0.5)
+    assert shorter["runs"] == 6 and shorter["spend"] < original["spend"]
