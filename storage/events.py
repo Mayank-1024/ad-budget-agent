@@ -94,6 +94,7 @@ class EventStore(Protocol):
                        days: int) -> list[CampaignWindow]: ...
     def daily_series(self, experiment_id: str, campaign_id: str, end_day: date,
                      days: int) -> list[DailyPoint]: ...
+    def latest_day(self, experiment_id: str) -> date | None: ...
 
 
 class MemoryEventStore:
@@ -146,6 +147,11 @@ class MemoryEventStore:
         by_day = self._daily.get((experiment_id, campaign_id), {})
         return [DailyPoint(d, v[0], int(v[1]), int(v[2]), int(v[3]), v[4])
                 for d, v in sorted(by_day.items()) if start <= d <= end]
+
+    def latest_day(self, experiment_id: str) -> date | None:
+        days = [d for (e, _), by_day in self._daily.items() if e == experiment_id
+                for d in by_day]
+        return max(days) if days else None
 
 
 class ClickHouseEventStore:
@@ -211,6 +217,13 @@ class ClickHouseEventStore:
             "start_day": start, "end_day": end})
         return [DailyPoint(r[0], float(r[1]), int(r[2]), int(r[3]), int(r[4]), float(r[5]))
                 for r in result.result_rows]
+
+    def latest_day(self, experiment_id: str) -> date | None:
+        result = self.client.query(
+            "SELECT max(day), count() FROM campaign_daily WHERE experiment_id = {e:String}",
+            parameters={"e": experiment_id})
+        day, n = result.result_rows[0]
+        return day if n else None
 
     def raw_daily_check(self, experiment_id: str, campaign_id: str) -> list[tuple]:
         result = self.client.query(queries.RAW_DAILY_CHECK, parameters={
