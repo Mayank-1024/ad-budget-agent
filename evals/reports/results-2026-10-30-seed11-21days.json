@@ -1,0 +1,272 @@
+{
+  "meta": {
+    "tag": "results-2026-10-30-seed11-21days",
+    "model": "claude-haiku-5-5 + scripted (RulePlayingModel, not an LLM)",
+    "store": "db",
+    "seed": 11,
+    "mode": "approve",
+    "brands": [
+      "lumen",
+      "ridgeline",
+      "kindred"
+    ],
+    "warmup_days": 7,
+    "eval_days": 21,
+    "generated_at": "2026-10-29T10:25:14+00:00",
+    "total_model_spend_usd": 0.3046,
+    "sources": [
+      "real-s11-baselines",
+      "real21-s11-approve"
+    ]
+  },
+  "scores": [
+    {
+      "experiment_id": "real-s11-baselines-hold",
+      "policy": "hold",
+      "model": "none",
+      "mode": "approve",
+      "memory": false,
+      "eval_days": 21,
+      "brands": [
+        "lumen",
+        "ridgeline",
+        "kindred"
+      ],
+      "spend": 143966.03,
+      "expected_true_revenue": 411903.78,
+      "realized_true_revenue": 405751.51,
+      "reported_revenue": 361681.43,
+      "true_roas": 2.861,
+      "reported_roas": 2.512,
+      "net_after_ad_spend": 267937.75,
+      "by_brand": {
+        "lumen": {
+          "spend": 51505.3,
+          "expected_true_revenue": 175123.89,
+          "true_roas": 3.4
+        },
+        "ridgeline": {
+          "spend": 51359.44,
+          "expected_true_revenue": 117503.94,
+          "true_roas": 2.288
+        },
+        "kindred": {
+          "spend": 41101.29,
+          "expected_true_revenue": 119275.95,
+          "true_roas": 2.902
+        }
+      },
+      "proposals": 0,
+      "proposals_by_status": {},
+      "rejections": 0,
+      "rejections_by_rule": {},
+      "repeated_rejections": 0,
+      "guardrail_interventions": {},
+      "runs": 63,
+      "fallback_runs": 0,
+      "fallback_reasons": {},
+      "output_retries": 0,
+      "api_retries": 0,
+      "model_calls": 0,
+      "tool_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cost_usd": 0.0,
+      "latency_s_mean": null,
+      "latency_s_p50": null,
+      "latency_s_p95": null
+    },
+    {
+      "experiment_id": "real-s11-baselines-roas_rule",
+      "policy": "roas_rule",
+      "model": "none",
+      "mode": "approve",
+      "memory": false,
+      "eval_days": 21,
+      "brands": [
+        "lumen",
+        "ridgeline",
+        "kindred"
+      ],
+      "spend": 171884.61,
+      "expected_true_revenue": 427690.76,
+      "realized_true_revenue": 426230.85,
+      "reported_revenue": 400324.14,
+      "true_roas": 2.488,
+      "reported_roas": 2.329,
+      "net_after_ad_spend": 255806.15,
+      "by_brand": {
+        "lumen": {
+          "spend": 65936.6,
+          "expected_true_revenue": 148522.87,
+          "true_roas": 2.253
+        },
+        "ridgeline": {
+          "spend": 58926.41,
+          "expected_true_revenue": 141485.91,
+          "true_roas": 2.401
+        },
+        "kindred": {
+          "spend": 47021.6,
+          "expected_true_revenue": 137681.98,
+          "true_roas": 2.928
+        }
+      },
+      "proposals": 128,
+      "proposals_by_status": {
+        "auto_approved": 81,
+        "blocked": 47
+      },
+      "rejections": 0,
+      "rejections_by_rule": {},
+      "repeated_rejections": 0,
+      "guardrail_interventions": {
+        "brand_cap": 60,
+        "tracking_freeze": 13,
+        "min_learning": 3
+      },
+      "runs": 63,
+      "fallback_runs": 0,
+      "fallback_reasons": {},
+      "output_retries": 0,
+      "api_retries": 0,
+      "model_calls": 0,
+      "tool_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "cost_usd": 0.0,
+      "latency_s_mean": null,
+      "latency_s_p50": null,
+      "latency_s_p95": null
+    },
+    {
+      "experiment_id": "real21-s11-approve-agent",
+      "policy": "agent",
+      "model": "claude-haiku-5-5",
+      "mode": "approve",
+      "memory": true,
+      "eval_days": 21,
+      "brands": [
+        "lumen",
+        "ridgeline",
+        "kindred"
+      ],
+      "spend": 155686.24,
+      "expected_true_revenue": 451567.48,
+      "realized_true_revenue": 446344.71,
+      "reported_revenue": 403010.48,
+      "true_roas": 2.9,
+      "reported_roas": 2.589,
+      "net_after_ad_spend": 295881.24,
+      "by_brand": {
+        "lumen": {
+          "spend": 52043.12,
+          "expected_true_revenue": 177489.06,
+          "true_roas": 3.41
+        },
+        "ridgeline": {
+          "spend": 57150.69,
+          "expected_true_revenue": 137645.8,
+          "true_roas": 2.408
+        },
+        "kindred": {
+          "spend": 46492.43,
+          "expected_true_revenue": 136432.62,
+          "true_roas": 2.935
+        }
+      },
+      "proposals": 61,
+      "proposals_by_status": {
+        "rejected": 2,
+        "approved": 59
+      },
+      "rejections": 2,
+      "rejections_by_rule": {
+        "demand_capped": 1,
+        "strategic_prospecting": 1
+      },
+      "repeated_rejections": 0,
+      "guardrail_interventions": {},
+      "runs": 63,
+      "fallback_runs": 0,
+      "fallback_reasons": {},
+      "output_retries": 4,
+      "api_retries": 1,
+      "model_calls": 186,
+      "tool_calls": 301,
+      "input_tokens": 767948,
+      "output_tokens": 146303,
+      "cost_usd": 0.1499,
+      "latency_s_mean": 15.37,
+      "latency_s_p50": 14.5,
+      "latency_s_p95": 19.509
+    },
+    {
+      "experiment_id": "real21-s11-approve-agent_no_memory",
+      "policy": "agent_no_memory",
+      "model": "claude-haiku-5-5",
+      "mode": "approve",
+      "memory": false,
+      "eval_days": 21,
+      "brands": [
+        "lumen",
+        "ridgeline",
+        "kindred"
+      ],
+      "spend": 159678.98,
+      "expected_true_revenue": 456400.91,
+      "realized_true_revenue": 456135.82,
+      "reported_revenue": 412805.6,
+      "true_roas": 2.858,
+      "reported_roas": 2.585,
+      "net_after_ad_spend": 296721.93,
+      "by_brand": {
+        "lumen": {
+          "spend": 55698.09,
+          "expected_true_revenue": 180015.26,
+          "true_roas": 3.232
+        },
+        "ridgeline": {
+          "spend": 57830.14,
+          "expected_true_revenue": 140144.75,
+          "true_roas": 2.423
+        },
+        "kindred": {
+          "spend": 46150.75,
+          "expected_true_revenue": 136240.9,
+          "true_roas": 2.952
+        }
+      },
+      "proposals": 115,
+      "proposals_by_status": {
+        "rejected": 47,
+        "approved": 68
+      },
+      "rejections": 47,
+      "rejections_by_rule": {
+        "demand_capped": 19,
+        "strategic_prospecting": 21,
+        "below_target": 7
+      },
+      "repeated_rejections": 41,
+      "guardrail_interventions": {
+        "max_change": 1
+      },
+      "runs": 63,
+      "fallback_runs": 1,
+      "fallback_reasons": {
+        "invalid_output": 1
+      },
+      "output_retries": 3,
+      "api_retries": 5,
+      "model_calls": 191,
+      "tool_calls": 328,
+      "input_tokens": 769379,
+      "output_tokens": 155349,
+      "cost_usd": 0.1546,
+      "latency_s_mean": 18.01,
+      "latency_s_p50": 14.732,
+      "latency_s_p95": 38.426
+    }
+  ]
+}

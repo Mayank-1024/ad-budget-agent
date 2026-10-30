@@ -175,9 +175,9 @@ brand. Its output is validated, then clipped by code, then (by default) approved
 person before anything executes. Failures fall back to holding budgets.
 
 **4. How do you know the agent is good?**
-Evals against two baselines on hidden ground truth. On 2026-10-29, over the 8 clean eval
-days and two seeds, every agent variant beat holding budgets by 5.0% to 7.9% on net after
-ad spend and beat the ROAS rule, which lost money relative to holding because it cut the
+Evals against two baselines on hidden ground truth. Over the full 21 eval days and two
+seeds (run 2026-10-29 to 30), every agent variant beat holding budgets by 9.2% to 11.2% on
+net after ad spend and beat the ROAS rule, which lost money relative to holding because it cut the
 under-reported prospecting campaign and scaled saturated brand search. The honest caveat: I designed the simulator, so the agent
 is being tested on traps I chose. It shows the loop works and the measurement is set up
 correctly, not that the agent would beat a media buyer on real accounts.
@@ -186,10 +186,10 @@ correctly, not that the agent would beat a media buyer on real accounts.
 In approve mode, a rejected move never executes, so memory does not change revenue much;
 what it changes is reviewer workload: how many times a person has to say "no" to the same
 thing. The eval counts repeated rejections (same campaign, direction and rule as an
-earlier rejection) with and without memory: 15 and 13 without, 0 and 0 with, on the two
-seeds. Memory did not improve revenue: the no-memory agent made slightly more net (2.7%
-and 1.2%), and the memory agent proposed fewer moves overall. Two seeds over 8 days cannot
-tell whether that is a real effect. In automate mode, where small moves skip the reviewer,
+earlier rejection) with and without memory: 44 and 41 without, 0 and 0 with, over 21 days
+on the two seeds, and the memory agent proposed about half as many moves. Memory did not
+clearly change revenue: net was 1.6% higher with memory in one seed and 0.3% lower in the
+other. Two seeds cannot tell whether a difference that small is real. In automate mode, where small moves skip the reviewer,
 memory could matter for outcomes too; that is the next experiment.
 
 **6. What happens when the model returns garbage or the API is down?**
@@ -220,7 +220,11 @@ and answers with what it has), and added tests for both paths. Second, the API a
 credit mid-run: every later call returned HTTP 400 and every run fell back to holding
 budgets, exactly as designed. I scored the 8 days before that by rebuilding them from
 Postgres and re-running the deterministic market, and checked the re-scorer reproduces a
-complete run's report exactly before trusting it.
+complete run's report exactly before trusting it. After a top-up I reran all five
+experiments for the full 21 days under new tags, so the 8-day results stayed intact; the
+gain over holding grew to 9.2% to 11.2%. The full runs also showed the agent leaving the
+broken-tracking campaign alone, and not clearly reacting to the promo week, which is the
+next thing to examine.
 
 **10. How much of this did you write vs Claude Code?**
 Answer this honestly in your own words. The README credit says it was built with Claude

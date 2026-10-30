@@ -117,11 +117,40 @@ Baselines execute their moves directly (no reviewer). Every policy goes through 
 
 `uv run python -m evals.run` uses `RulePlayingModel`, a fixed rule played through the real tool loop. It tests the pipeline (tools, queries, validation, guardrails, approvals, memory), not Claude. `evals/reports/example-scripted-offline.md` is a committed example from 2026-10-29. On 2026-10-29 the two baselines run on ClickHouse and Postgres (`--store db`) produced exactly the numbers of the in-memory run, and `tests/test_db_integration.py` asserts the same for a short scripted-agent experiment.
 
-### Real model (2026-10-29, `claude-haiku-5-5`, effort `medium`)
+### Real model, full 21 days (2026-10-29 to 30, `claude-haiku-5-5`, effort `medium`)
+
+Runs used ClickHouse 24.8.14 and Postgres 17.11 in Docker Compose: 21 eval days after a 7-day warm-up, all 3 brands, two seeds (7 and 11). Baselines are the scripted `hold` and `roas_rule` runs on the same market. Reports: `evals/reports/results-2026-10-30-seed7-21days.md` and `results-2026-10-30-seed11-21days.md` (built with `evals/combine.py` from the `real-s*-baselines` and `real21-*` reports).
+
+| seed | policy | spend | expected true revenue | true ROAS | net after ad spend | net vs hold | proposals | rejected | repeated rejections |
+|---|---|---|---|---|---|---|---|---|---|
+| 7 | hold | 144,249 | 412,781 | 2.862 | 268,531 | | 0 | 0 | 0 |
+| 7 | roas_rule | 172,745 | 423,252 | 2.450 | 250,507 | -6.7% | 134 | 0 | 0 |
+| 7 | agent (approve, memory) | 155,755 | 454,283 | 2.917 | 298,528 | +11.2% | 67 | 3 | 0 |
+| 7 | agent (approve, no memory) | 158,132 | 451,864 | 2.858 | 293,732 | +9.4% | 114 | 49 | 44 |
+| 7 | agent (automate, memory) | 151,896 | 445,006 | 2.930 | 293,109 | +9.2% | 56 | 3 | 0 |
+| 11 | hold | 143,966 | 411,904 | 2.861 | 267,938 | | 0 | 0 | 0 |
+| 11 | roas_rule | 171,885 | 427,691 | 2.488 | 255,806 | -4.5% | 128 | 0 | 0 |
+| 11 | agent (approve, memory) | 155,686 | 451,567 | 2.900 | 295,881 | +10.4% | 61 | 2 | 0 |
+| 11 | agent (approve, no memory) | 159,679 | 456,401 | 2.858 | 296,722 | +10.7% | 115 | 47 | 41 |
+
+In the combined seed-7 report the automate experiment is the second `agent` row.
+
+Cost and reliability: $0.15 to $0.16 per 21-day, 3-brand agent experiment (63 runs), $0.78 for all five. Per-run latency p50 13.8 to 16.4 s; p95 19.5 to 38.4 s, except 124.7 s in the automate run, where the API returned transient errors (21 API retries). 2 of the 315 agent runs fell back to holding: one invalid output after its retry, one model unavailable after retries. Guardrails intervened twice (both the 20% max-change cap).
+
+What the numbers say, and do not say:
+
+- **Every agent variant beat both baselines on net after ad spend in both seeds: +9.2% to +11.2% over holding**, with a higher true ROAS than either baseline, while spending about 8% more than holding. The ROAS rule spent the most and earned the least, as in the first attempt below.
+- **Memory removed repeated rejections: 44 and 41 without memory, 0 and 0 with it** (total rejections 49 and 47 without, 3 and 2 with). The memory agent also proposed about half as many moves (67 vs 114, 61 vs 115), so a reviewer had far less to read.
+- **Memory did not clearly change revenue.** With memory, net was 1.6% higher in seed 7 and 0.3% lower in seed 11. In approve mode a rejected move never executes, so memory mainly saves reviewer effort. Two seeds cannot separate a difference that small from noise.
+- **Broken tracking:** Ridgeline's TikTok campaign reports zero conversions from 2026-09-13. None of the five agent experiments proposed any change to it after that date (the system prompt says normal clicks with zero conversions point to a tracking problem), so the code-level tracking freeze never had to act. The ROAS rule did try to cut it, and the freeze blocked those cuts.
+- **Promo week:** the agent did not clearly respond to Kindred's promo week (2026-09-18 to 22): its Kindred proposals that week were split about evenly between increases and decreases. This is the next behavior to examine.
+- **Automate vs approve (seed 7, memory):** automate earned 1.8% less net than approve. With a single seed that is not a finding.
+
+### First attempt (2026-10-29): 8 clean days
 
 Runs used ClickHouse 24.8.14 and Postgres 17.11 in Docker Compose. Each agent experiment was launched for 21 eval days, two seeds (7 and 11), all 3 brands.
 
-**What happened during the runs.** The API account's credit ran out partway through: from simulated day 2026-09-17 (2026-09-16 for one experiment) every call returned HTTP 400 "credit balance is too low", and every run from then on fell back to holding budgets, as the fallback is designed to do. The model is not at fault for those days, so the 21-day totals are not a fair score. Each simulated day depends only on earlier days, so the first 8 eval days (2026-09-08 to 2026-09-15), where every model call succeeded in every experiment, are a valid 8-day experiment on their own. `evals/rescore.py` rebuilds them from Postgres (budgets from `budget_changes`, ground truth by re-running the deterministic market); re-scoring a complete 21-day experiment with it reproduced its original report exactly. The numbers below are that 8-day window. Total model spend for all real runs on 2026-10-29, including an aborted first attempt and a one-brand probe, was $0.44 at list price (546 model calls), well under the $4 budget.
+**What happened during the first attempt.** The API account's credit ran out partway through: from simulated day 2026-09-17 (2026-09-16 for one experiment) every call returned HTTP 400 "credit balance is too low", and every run from then on fell back to holding budgets, as the fallback is designed to do. The model is not at fault for those days, so the 21-day totals are not a fair score. Each simulated day depends only on earlier days, so the first 8 eval days (2026-09-08 to 2026-09-15), where every model call succeeded in every experiment, are a valid 8-day experiment on their own. `evals/rescore.py` rebuilds them from Postgres (budgets from `budget_changes`, ground truth by re-running the deterministic market); re-scoring a complete 21-day experiment with it reproduced its original report exactly. The numbers below are that 8-day window. Total model spend for all real runs on 2026-10-29, including an aborted first attempt and a one-brand probe, was $0.44 at list price (546 model calls), well under the $4 budget.
 
 Seed 7 (`evals/reports/results-2026-10-29-seed7-8days.md`):
 
@@ -149,7 +178,7 @@ What the numbers say, and do not say:
 - **Every agent variant beat both baselines on net after ad spend in both seeds** (+5.0% to +7.9% over holding), with a higher true ROAS than either baseline. The ROAS rule spent the most and earned the least net: in seed 7 it cut the strategic prospecting campaign from $1,000 to $168 a day (its reported ROAS is about 1.1, its true ROAS about 2.5) and scaled saturated brand search from $400 to $1,300. The agent proposed similar moves on those two campaigns, the reviewer rejected them, and they never executed. On its own it cut the fatiguing TikTok creative ($600 to $384) and the weak Performance Max campaign ($500 to $166), and scaled Google Shopping ($800 to $1,595).
 - **Memory removed repeated rejections: 15 and 13 without memory, 0 and 0 with it** (total rejections 19 and 18 without, 3 and 3 with). With memory, each reviewer rule was hit once and not again.
 - **Memory did not improve revenue.** The no-memory agent had higher net in both seeds (by 2.7% and 1.2%). In approve mode a rejected move never executes, so memory mainly saves reviewer effort; the agent with memory also proposed fewer moves overall (39 vs 58, 32 vs 55) and spent less, which cost some upside. Two seeds over 8 days cannot separate that from noise in the model's choices.
-- **Not tested by the real runs:** the broken-tracking campaign only becomes detectable (3 days of clicks with zero conversions) on 2026-09-16, after the clean window, and the promo week starts on 2026-09-18. Both are covered by unit tests, and in the full 21-day baseline runs (no model involved) the tracking freeze blocked the ROAS rule's cuts to that campaign 13 times in each seed.
+- **Not covered by the 8-day window:** the broken-tracking campaign and the promo week come later; the full 21-day runs above cover both.
 
 **Finding from the first real attempt (2026-10-29, aborted).** The first launch used a 6-call tool limit. Claude sometimes asked for the daily trend of several campaigns in one parallel batch and overshot it, so 3 of the first runs fell back to holding. The limit was too tight and too abrupt, not a model error. It is now 10, and going over is graceful: the batch is not run, the model is told its tool budget is used up, and it answers with the data it has (`agent/loop.py`, tests in `tests/test_agent_loop.py`). Those runs were discarded and all experiments above were run with the new limit.
 
@@ -231,7 +260,7 @@ tests/          pytest suite (offline) and -m db integration tests
 ## Limitations
 
 - **The simulator is mine.** The agent is tested on traps I designed (an attribution gap, a saturated campaign, a fatiguing creative, a broken pixel, a promo week). The results show the loop works and is measured correctly; they do not show the agent would beat a person on a real account.
-- **Small sample.** Two seeds, 8 clean eval days of real-model runs (the API credit ran out after that), 3 brands, 11 campaigns.
+- **Small sample.** Two seeds, 21 eval days of real-model runs, 3 brands, 11 campaigns, one model.
 - **The reviewer is a rule set.** Real reviewers are inconsistent, and their reasons are free text that would need better retrieval than a recency-ordered SQL query.
 - **No real ad-platform behavior.** No auction dynamics, learning-phase resets, attribution windows or conversion lag; spend is assumed to track budget.
 - **One run at a time per brand.** A production system would queue runs per brand on workers, with per-tenant spend limits.

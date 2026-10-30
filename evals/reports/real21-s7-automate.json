@@ -1,0 +1,88 @@
+{
+  "meta": {
+    "tag": "real21-s7-automate",
+    "model": "claude-haiku-5-5",
+    "store": "db",
+    "seed": 7,
+    "mode": "automate",
+    "brands": [
+      "lumen",
+      "ridgeline",
+      "kindred"
+    ],
+    "warmup_days": 7,
+    "eval_days": 21,
+    "generated_at": "2026-10-30T05:32:58+00:00",
+    "total_model_spend_usd": 0.1545
+  },
+  "scores": [
+    {
+      "experiment_id": "real21-s7-automate-agent",
+      "policy": "agent",
+      "model": "claude-haiku-5-5",
+      "mode": "automate",
+      "memory": true,
+      "eval_days": 21,
+      "brands": [
+        "lumen",
+        "ridgeline",
+        "kindred"
+      ],
+      "spend": 151896.14,
+      "expected_true_revenue": 445005.54,
+      "realized_true_revenue": 448054.56,
+      "reported_revenue": 397913.36,
+      "true_roas": 2.93,
+      "reported_roas": 2.62,
+      "net_after_ad_spend": 293109.4,
+      "by_brand": {
+        "lumen": {
+          "spend": 51445.75,
+          "expected_true_revenue": 176480.42,
+          "true_roas": 3.43
+        },
+        "ridgeline": {
+          "spend": 55289.23,
+          "expected_true_revenue": 134945.51,
+          "true_roas": 2.441
+        },
+        "kindred": {
+          "spend": 45161.16,
+          "expected_true_revenue": 133579.61,
+          "true_roas": 2.958
+        }
+      },
+      "proposals": 56,
+      "proposals_by_status": {
+        "rejected": 3,
+        "approved": 34,
+        "auto_approved": 19
+      },
+      "rejections": 3,
+      "rejections_by_rule": {
+        "demand_capped": 1,
+        "strategic_prospecting": 1,
+        "below_target": 1
+      },
+      "repeated_rejections": 0,
+      "guardrail_interventions": {
+        "max_change": 1
+      },
+      "runs": 63,
+      "fallback_runs": 1,
+      "fallback_reasons": {
+        "model_unavailable": 1
+      },
+      "output_retries": 4,
+      "api_retries": 21,
+      "model_calls": 184,
+      "tool_calls": 304,
+      "input_tokens": 784845,
+      "output_tokens": 152069,
+      "cost_usd": 0.1545,
+      "latency_s_mean": 32.14,
+      "latency_s_p50": 14.681,
+      "latency_s_p95": 124.672
+    }
+  ]
+}
